@@ -12,7 +12,7 @@ const config = {
             edge: false,
         }),
         serviceWorker: {
-            register: true
+            register: false
         }
     }
 };

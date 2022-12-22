@@ -1,6 +1,6 @@
 import { } from "$service-worker"
 
-async function subscribeToPushNotifications() {
+ async function subscribeToPushNotifications() {
     console.log("here")
     let subscription = await self.registration.pushManager.getSubscription();
     if (!subscription) {

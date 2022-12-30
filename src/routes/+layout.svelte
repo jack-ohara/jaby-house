@@ -1,48 +1,15 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { signIn, signOut } from '@auth/sveltekit/client';
+  import { subscribeToPushNotifications } from '$lib/pushManager';
+  import { onMount } from 'svelte';
 
-  //   function test() {
-  //     const registration: ServiceWorkerRegistration;
-
-  //     registration.pushManager.subscribe({
-  //       applicationServerKey: VAPID_PUBLIC_KEY,
-  //       userVisibleOnly: true
-  //     });
-  //   }
-</script>
-
-<!-- <svelte:head>
-  <script>
+  onMount(async () => {
     if ('serviceWorker' in navigator) {
-      addEventListener('load', async function () {
-        const registration = await navigator.serviceWorker.register('./service-worker.js', {
-          type: 'module'
-        });
-
-        let subscription = await registration.pushManager.getSubscription();
-        if (!subscription) {
-          try {
-            subscription = await registration.pushManager.subscribe({
-                applicationServerKey: 'BFd50fUKhp1rfIkFGTKZKjsU2_oSf0lp84f0YKZ6zrA-jgdu7P2LJCEFy7cVGJlk6x_U3dMErKQqfVE3jdHINS8',
-                userVisibleOnly: true
-            });
-
-            console.log(subscription)
-          } catch (e) {
-            console.log(e)
-          }
-        } else {
-            console.log('subscription already exists')
-            console.log(JSON.stringify(subscription))
-            console.log(subscription)
-            console.log(subscription.getKey())
-            console.log(subscription.subscriptionId)
-        }
-      });
+      subscribeToPushNotifications(await navigator.serviceWorker.ready)
     }
-  </script>
-</svelte:head> -->
+  });
+</script>
 
 <div>
   <header>

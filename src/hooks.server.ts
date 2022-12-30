@@ -10,4 +10,19 @@ export const handle = SvelteKitAuth({
             issuer: COGNITO_ISSUER,
         })
     ],
+    callbacks: {
+        jwt: ({ token, account }) => {
+            if (account) {
+                token.idToken = account.id_token
+            }
+
+            return token
+        },
+        session: ({ session, token }) => {
+            session.idToken = token.idToken
+            return session
+        }
+    }
 })
+
+// For when token refresh becomes a problem: https://authjs.dev/guides/basics/refresh-token-rotation

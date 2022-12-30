@@ -18,7 +18,7 @@ export async function POST({ locals, fetch, request }: RequestEvent): Promise<Re
     console.log('Found ID token')
 
     try {
-        const response = await fetch('https://jg0e9kasq9.execute-api.eu-west-1.amazonaws.com/prod/push-manager-subscription', {
+        const response = await fetch('jg0e9kasq9.execute-api.eu-west-1.amazonaws.com/prod/push-manager-subscription', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${session.idToken}`
@@ -30,5 +30,6 @@ export async function POST({ locals, fetch, request }: RequestEvent): Promise<Re
         return response
     } catch (e) {
         console.log('error:', e)
+        throw e
     }
 }

@@ -7,8 +7,10 @@
     }
 
     function generateNotification() {
-        new Notification("Here's a notification", {
-            body: 'Create by me',
+        new Notification("The title", {
+            body: 'The body',
+            renotify: true,
+            icon: './house-icon.png'
         })
     }
 </script>
@@ -17,4 +19,3 @@
 <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 
 <button on:click={() => requestNotificationPermission()}>Request notification permission</button>
-<button on:click={() => generateNotification()}>Generate a notificatin</button>

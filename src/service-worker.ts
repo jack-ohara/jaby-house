@@ -1,5 +1,3 @@
-import { } from "$service-worker"
-
 self.addEventListener('push', (event: any) => {
     const data = event.data.json()
 
@@ -12,3 +10,5 @@ self.addEventListener('push', (event: any) => {
         })
     )
 })
+
+export {}

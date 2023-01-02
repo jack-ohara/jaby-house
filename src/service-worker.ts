@@ -12,20 +12,20 @@ self.addEventListener('push', (event: any) => {
 })
 
 self.addEventListener('notificationclick', (event: any) => {
-    const rootUrl = new URL('/', location).href;
     event.notification.close();
-    // Enumerate windows, and call window.focus(), or open a new one.
-    console.log(clients)
-    event.waitUntil(
-      clients.matchAll().then(matchedClients => {
-        for (let client of matchedClients) {
-          if (client.url === rootUrl) {
-            return client.focus();
-          }
+
+    // This looks to see if the current is already open and
+    // focuses if it is
+    event.waitUntil(clients.matchAll({
+        type: "window"
+    }).then((clientList) => {
+        for (const client of clientList) {
+            if (client.url === '/' && 'focus' in client)
+                return client.focus();
         }
-        return clients.openWindow("/");
-      })
-    );
+        if (clients.openWindow)
+            return clients.openWindow('/');
+    }));
 });
 
-export {}
+export { }

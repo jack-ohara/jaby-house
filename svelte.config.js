@@ -10,7 +10,6 @@ const config = {
     kit: {
         adapter: adapter({
             edge: false,
-            split: true
         }),
         serviceWorker: {
             register: true

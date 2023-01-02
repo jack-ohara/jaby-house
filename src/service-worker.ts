@@ -50,6 +50,7 @@ import { } from "$service-worker"
 // subscribeToPushNotifications()
 
 self.addEventListener('push', (event: any) => {
+    console.log('received push event')
     console.log(event.data.text())
 
     event.waitUntil(

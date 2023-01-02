@@ -6,7 +6,9 @@ self.addEventListener('push', (event: any) => {
     event.waitUntil(
         self.registration.showNotification(data.title, {
             body: data.message,
-            icon: './house-icon.png'
+            icon: './house-icon.png',
+            renotify: true,
+            tag: data.tag ?? self.crypto.randomUUID()
         })
     )
 })

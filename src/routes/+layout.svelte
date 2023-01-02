@@ -115,8 +115,7 @@
     background-size: cover;
     background-repeat: no-repeat;
   }
-  .button,
-  .buttonPrimary {
+  .button {
     float: right;
     margin-right: -0.4rem;
     font-weight: 500;
@@ -129,16 +128,6 @@
     z-index: 10;
     background-color: transparent;
     color: #555;
-  }
-  .buttonPrimary {
-    background-color: #346df1;
-    border-color: #346df1;
-    color: #fff;
-    text-decoration: none;
-    padding: 0.7rem 1.4rem;
-  }
-  .buttonPrimary:hover {
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.2);
   }
   .navItems {
     margin-bottom: 2rem;

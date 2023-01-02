@@ -26,7 +26,6 @@ export async function subscribeToPushNotifications(swRegistration: ServiceWorker
             body: JSON.stringify(subscription),
         })
         console.log(response)
-        console.log(await response.text())
     } catch (e) {
         console.log("failed to post the subscription details:", e)
     }

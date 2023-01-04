@@ -1,10 +1,8 @@
 import { PUBLIC_VAPID_PUBLIC_KEY as VAPID_PUBLIC_KEY } from "$env/static/public";
 
 export async function subscribeToPushNotifications(swRegistration: ServiceWorkerRegistration) {
-    console.log("here")
     let subscription = await swRegistration.pushManager.getSubscription();
     if (!subscription) {
-        console.log("no existing subscription")
         try {
             subscription = await swRegistration.pushManager.subscribe({
                 applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY),
@@ -16,8 +14,7 @@ export async function subscribeToPushNotifications(swRegistration: ServiceWorker
     }
 
     try {
-        console.log('posting subscription')
-        const response = await fetch(
+        await fetch(
             '/api/push-manager-subscription', {
             method: 'POST',
             headers: {
@@ -25,7 +22,6 @@ export async function subscribeToPushNotifications(swRegistration: ServiceWorker
             },
             body: JSON.stringify(subscription),
         })
-        console.log(response)
     } catch (e) {
         console.log("failed to post the subscription details:", e)
     }

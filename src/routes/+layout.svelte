@@ -1,14 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { signIn, signOut } from '@auth/sveltekit/client';
-  import { subscribeToPushNotifications } from '$lib/pushManager';
-  import { onMount } from 'svelte';
-
-  onMount(async () => {
-    if ('serviceWorker' in navigator) {
-      subscribeToPushNotifications(await navigator.serviceWorker.ready)
-    }
-  });
 </script>
 
 <div>
@@ -26,15 +18,17 @@
           <button on:click={() => signOut()} class="button">Sign out</button>
         {:else}
           <span class="notSignedInText">You are not signed in</span>
-          <button on:click={() => signIn()} class="button">Sign in</button>
+          <button on:click={() => signIn('cognito')} class="button">Sign in</button>
         {/if}
       </p>
     </div>
     <nav>
-      <ul class="navItems">
-        <li class="navItem"><a href="/">Home</a></li>
-        <li class="navItem"><a href="/protected">Protected</a></li>
-      </ul>
+      {#if $page.data.session}
+        <ul class="navItems">
+          <li class="navItem"><a href="/">Home</a></li>
+          <li class="navItem"><a href="/protected">Protected</a></li>
+        </ul>
+      {/if}
     </nav>
   </header>
   <slot />

@@ -5,7 +5,6 @@
   import Modal from '$lib/components/modal.svelte';
 
   let showCreateHouseholdModal = false;
-  let showInviteUserModal = false;
 
   async function requestNotificationPermission() {
     await Notification.requestPermission();
@@ -23,24 +22,26 @@
   async function handleCreateNewHousehold() {
     showCreateHouseholdModal = true;
   }
+
+  async function shareHousehold() {
+    try {
+        await navigator.share({
+            title: `Join the ${$page.data.household.name} household`,
+            url: `${location.origin}/join?code=${$page.data.household.joinCode}`
+        })
+    } catch (e) {
+        console.log('Could not share household')
+    }
+  }
 </script>
 
-<div>
+<div class="wrapper">
   {#if $page.data.household}
-    <h2>{$page.data.household.name}</h2>
-    <div>Here would be the schedule stuff...</div>
-
-    {#if showCreateHouseholdModal}
-      <Modal on:close={() => (showCreateHouseholdModal = false)}>
-        <h2 slot="header" class="modal-header">
-          Invite someone to the {$page.data.household.name} household
-        </h2>
-
-        <form class="invite-user-form" method="post" action="?/inviteUser">
-            
-        </form>
-      </Modal>
-    {/if}
+    <div class="household-content">
+      <h2>{$page.data.household.name}</h2>
+      <div class="content">Here would be the schedule stuff...</div>
+      <button class="button" on:click={() => shareHousehold()}>Invite someone to join your household</button>
+    </div>
   {:else}
     <p>It looks like you're not part of a household yet...</p>
     <div class="household-buttons">
@@ -67,13 +68,24 @@
 </div>
 
 <style>
+  .wrapper {
+    min-height: 100%;
+  }
+  .household-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  .household-content .content {
+    flex-grow: 1;
+  }
   .household-buttons {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .household-buttons .button {
+  .button {
     font-size: 16px;
     padding: 4px 8px;
   }

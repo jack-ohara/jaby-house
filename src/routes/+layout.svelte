@@ -3,7 +3,7 @@
   import { signIn, signOut } from '@auth/sveltekit/client';
 </script>
 
-<div>
+<div class="page-container">
   <header>
     <div class="signedInStatus">
       <p class="nojs-show loaded">
@@ -64,6 +64,11 @@
     width: 100%;
     border-radius: 0.5rem;
     filter: invert(1);
+  }
+  .page-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   .nojs-show {
     opacity: 1;
@@ -137,5 +142,8 @@
   main {
     display: flex;
     flex-direction: column;
+    overflow: auto;
+    flex-grow: 1;
+    padding-bottom: 1em;
   }
 </style>

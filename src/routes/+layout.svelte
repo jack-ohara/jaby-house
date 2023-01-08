@@ -26,7 +26,6 @@
       {#if $page.data.session}
         <ul class="navItems">
           <li class="navItem"><a href="/">Home</a></li>
-          <li class="navItem"><a href="/protected">Protected</a></li>
         </ul>
       {/if}
     </nav>

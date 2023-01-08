@@ -41,13 +41,34 @@ export class HouseholdClient {
                 body: JSON.stringify({ name: householdName })
             })
 
-            if (response.bodyUsed) {
+            if (response.ok) {
                 return await response.json()
             }
 
             return undefined
         } catch (e) {
-            console.log('error posting push manager subscription:', e)
+            console.log('error creating household:', e)
+            throw e
+        }
+    }
+
+    async joinHousehold(joinCode: string) {
+        try {
+            const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/household/join', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${this.auth_token}`
+                },
+                body: JSON.stringify({ joinCode })
+            })
+
+            if (response.ok) {
+                return await response.json()
+            }
+
+            throw new Error('Something went wrong')
+        } catch (e) {
+            console.log('error joining household:', e)
             throw e
         }
     }

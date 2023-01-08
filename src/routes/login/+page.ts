@@ -5,7 +5,7 @@ export const load = (async ({ parent }) => {
     const { session } = await parent()
 
     if (session?.user) {
-        throw redirect(302, "/")
+        throw redirect(301, "/")
     }
     return {}
 }) satisfies PageLoad

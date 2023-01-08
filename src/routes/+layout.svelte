@@ -31,7 +31,9 @@
       {/if}
     </nav>
   </header>
-  <slot />
+  <main>
+    <slot />
+  </main>
 </div>
 
 <style>
@@ -124,12 +126,17 @@
     color: #555;
   }
   .navItems {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     padding: 0;
     list-style: none;
   }
   .navItem {
     display: inline-block;
     margin-right: 1rem;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 </style>

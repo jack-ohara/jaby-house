@@ -1,6 +1,6 @@
 import { HouseholdClient } from "$lib/householdClient"
 import { redirectToLoginPage } from "$lib/util/redirectToLoginPage"
-import { error } from "@sveltejs/kit"
+import { error, redirect } from "@sveltejs/kit"
 import type { PageServerLoad } from "./$types"
 import type { Actions } from "./$types"
 
@@ -18,12 +18,19 @@ export const load: PageServerLoad = async ({ locals }) => {
     const client = new HouseholdClient(session)
     const household = await client.getHousehold()
 
+    if (!household) {
+      throw redirect(301, '/household')
+    }
+
     return {
-      household
+      household,
+      title: 'Schedule'
     }
   } catch (e) {
     console.log('error retrieving household:', e)
-    return {}
+    return {
+      title: 'Schedule'
+    }
   }
 }
 

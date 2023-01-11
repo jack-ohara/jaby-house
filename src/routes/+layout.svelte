@@ -88,6 +88,11 @@
     display: flex;
     justify-content: center;
   }
+  @supports (-webkit-touch-callout: none) {
+    footer {
+      margin-bottom: 1em;
+    }
+  }
   footer nav {
     min-width: 100%;
   }

@@ -2,7 +2,7 @@
   export let type: "reset" | "submit" | "button" | undefined = undefined;
 </script>
 
-<button on:click type={type}>
+<button on:click type={type} class={$$props.class}>
   <slot />
 </button>
 
@@ -14,6 +14,7 @@
     border-radius: 6px;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
+    font-size: inherit;
   }
   button:hover {
     background: #cbd5e1;

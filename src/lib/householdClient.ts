@@ -20,7 +20,8 @@ export class HouseholdClient {
                 }
             })
 
-            if (response.ok) {
+            // We can get a 204 if the user isn't yet in a household
+            if (response.ok && response.status === 200) {
                 return response.json()
             }
 
@@ -69,6 +70,26 @@ export class HouseholdClient {
             throw new Error('Something went wrong')
         } catch (e) {
             console.log('error joining household:', e)
+            throw e
+        }
+    }
+
+    async leaveHousehold() {
+        try {
+            const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/household/leave', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${this.auth_token}`
+                },
+            })
+
+            if (response.ok) {
+                return
+            }
+
+            console.log('status code from leave household call not 200:', response)
+        } catch (e) {
+            console.log('error leaving household:', e)
             throw e
         }
     }

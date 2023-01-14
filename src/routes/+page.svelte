@@ -1,7 +1,11 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import Button from '$lib/components/button.svelte';
+  import Modal from '$lib/components/modal.svelte';
   import { subscribeToPushNotifications } from '$lib/pushManager';
   import { onMount } from 'svelte';
+
+  let showNewTaskModal = false;
 
   async function requestNotificationPermission() {
     await Notification.requestPermission();
@@ -46,6 +50,28 @@
           nostrud ad pariatur commodo.
         </p>
       </div>
+
+      <span class="add-task-btn-wrapper">
+        <Button class="add-task-btn" on:click={() => (showNewTaskModal = true)}>+</Button>
+      </span>
+
+      {#if showNewTaskModal}
+        <Modal on:close={() => (showNewTaskModal = false)}>
+          <h2 slot="header" class="new-task-modal-header">Add a new task</h2>
+
+          <form class="new-task-form" method="post" action="?/createNewTask">
+            <input
+              autofocus
+              type="text"
+              id="new-task-name"
+              name="new-task-name"
+              placeholder="Task name"
+            />
+
+            <Button type="submit">Add</Button>
+          </form>
+        </Modal>
+      {/if}
     </div>
   {/if}
 </div>
@@ -61,5 +87,19 @@
   }
   .household-content .content {
     flex-grow: 1;
+  }
+  .add-task-btn-wrapper {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 2em;
+  }
+  .add-task-btn-wrapper :global(.add-task-btn) {
+    border-radius: 50%;
+    aspect-ratio: 1;
+    background-color: firebrick;
+    color: white;
+    padding: 8px 16px;
   }
 </style>

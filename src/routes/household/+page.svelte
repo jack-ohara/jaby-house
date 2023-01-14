@@ -4,6 +4,7 @@
   import Modal from '$lib/components/modal.svelte';
 
   let showCreateHouseholdModal = false;
+  let showConfirmLeaveHouseholdModal = false;
 
   async function shareHousehold() {
     try {
@@ -15,10 +16,6 @@
       console.log('Could not share household');
     }
   }
-
-  async function handleCreateNewHousehold() {
-    showCreateHouseholdModal = true;
-  }
 </script>
 
 <div class="container">
@@ -26,12 +23,36 @@
     <div class="content">
       <h2>{$page.data.household.name}</h2>
     </div>
-    
-    <Button on:click={() => shareHousehold()}>Invite someone to join your household</Button>
+
+    <div class="btn-group">
+      <Button class="btn" on:click={() => shareHousehold()}>
+        Invite someone to join your household
+      </Button>
+      <Button class="btn leave-household" on:click={() => (showConfirmLeaveHouseholdModal = true)}>
+        Leave household
+      </Button>
+    </div>
+
+    {#if showConfirmLeaveHouseholdModal}
+      <Modal on:close={() => (showConfirmLeaveHouseholdModal = false)}>
+        <div slot="header">
+          <h2 class="modal-header">Are you sure you want to leave the household?</h2>
+          <p>
+            If you are the only member of this household then it and all associated data will be
+            deleted
+          </p>
+        </div>
+
+        <form class="leave-modal-btn-group" method="post" action="?/leaveHousehold">
+          <Button on:click={() => (showConfirmLeaveHouseholdModal = false)}>Cancel</Button>
+          <Button class="leave-household">Leave</Button>
+        </form>
+      </Modal>
+    {/if}
   {:else}
     <p>It looks like you're not part of a household yet...</p>
     <div class="household-buttons">
-      <Button on:click={handleCreateNewHousehold}>Create a new household</Button>
+      <Button on:click={() => (showCreateHouseholdModal = true)}>Create a new household</Button>
     </div>
 
     {#if showCreateHouseholdModal}
@@ -64,6 +85,10 @@
     flex-grow: 1;
   }
 
+  .container :global(.btn) {
+    padding-block: 1em;
+  }
+
   .household-buttons {
     display: flex;
     flex-direction: column;
@@ -84,5 +109,35 @@
   .create-household-form * {
     font-size: 1.5rem;
     padding: 0.3em;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+  }
+
+  .btn-group :global(.leave-household),
+  .leave-modal-btn-group :global(.leave-household) {
+    background-color: rgb(160, 55, 55);
+    color: rgb(221, 207, 207);
+  }
+
+  .btn-group :global(.leave-household:hover),
+  .leave-modal-btn-group :global(.leave-household:hover) {
+    background: rgb(121, 34, 34);
+  }
+  .btn-group :global(.leave-household:focus),
+  .leave-modal-btn-group :global(.leave-household:focus) {
+    background: rgb(121, 34, 34);
+  }
+
+  .leave-modal-btn-group {
+    display: flex;
+    gap: 1em;
+  }
+
+  .leave-modal-btn-group > :global(*) {
+    flex: 1 1 0;
   }
 </style>

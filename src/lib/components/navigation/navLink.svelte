@@ -29,13 +29,14 @@
   }
 
   .navItem a :global(svg) {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
   }
 
   .navItem a h4 {
     margin: 0;
-    font-size: 13px;
+    margin-top: -4px;
+    font-size: 12px;
     font-weight: 500;
   }
 </style>

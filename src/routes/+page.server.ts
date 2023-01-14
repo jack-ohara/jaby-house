@@ -25,7 +25,12 @@ export const load: PageServerLoad = async ({ locals }) => {
       household,
       title: 'Schedule'
     }
-  } catch (e) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    if ('status' in e && 'location' in e) {
+      throw e
+    }
+    
     console.log('error retrieving household:', e)
     return {
       title: 'Schedule'

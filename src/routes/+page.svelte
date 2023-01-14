@@ -101,5 +101,7 @@
     background-color: firebrick;
     color: white;
     padding: 8px 16px;
+    width: 50px;
+    height: 50px;
   }
 </style>

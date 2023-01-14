@@ -1,4 +1,4 @@
-import type { Session } from "@auth/core";
+import type { Session } from "@auth/core/types";
 
 export class HouseholdClient {
     private auth_token: string;

@@ -1,19 +1,19 @@
+import { API_BASE_URL } from "$env/static/private";
 import type { Session } from "@auth/core/types";
+import { Client } from "./client";
 
-export class HouseholdClient {
-    private auth_token: string;
+export class HouseholdClient extends Client {
+    private base_url: string;
 
     constructor(session: Session) {
-        if (!('id_token' in session)) {
-            throw Error('Could not find valid access token in session')
-        }
+        super(session)
 
-        this.auth_token = session.id_token as string
+        this.base_url = `${API_BASE_URL}/household`
     }
 
     async getHousehold() {
         try {
-            const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/household', {
+            const response = await fetch(this.base_url, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${this.auth_token}`
@@ -34,7 +34,7 @@ export class HouseholdClient {
 
     async createHousehold(householdName: string) {
         try {
-            const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/household', {
+            const response = await fetch(this.base_url, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${this.auth_token}`
@@ -55,7 +55,7 @@ export class HouseholdClient {
 
     async joinHousehold(joinCode: string) {
         try {
-            const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/household/join', {
+            const response = await fetch(`${this.auth_token}/join`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${this.auth_token}`
@@ -76,7 +76,7 @@ export class HouseholdClient {
 
     async leaveHousehold() {
         try {
-            const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/household/leave', {
+            const response = await fetch(`${this.auth_token}/leave`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${this.auth_token}`

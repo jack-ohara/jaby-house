@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "$env/static/private";
 import { error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
 
@@ -13,7 +14,7 @@ export async function POST({ locals, fetch, request }: RequestEvent): Promise<Re
     }
 
     try {
-        const response = await fetch('https://ocsrml2vvb.execute-api.eu-west-1.amazonaws.com/prod/push-manager-subscription', {
+        const response = await fetch(`${API_BASE_URL}/push-manager-subscription`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${session.id_token}`

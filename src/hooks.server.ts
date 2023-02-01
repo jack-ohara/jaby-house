@@ -1,7 +1,7 @@
-import SvelteKitAuth from "@auth/sveltekit";
+import { SvelteKitAuth } from "@auth/sveltekit";
 import Cognito from '@auth/core/providers/cognito'
 import { COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, COGNITO_ISSUER } from '$env/static/private'
-import type { TokenSet } from "@auth/core";
+import type { TokenSet } from "@auth/core/types";
 
 export const handle = SvelteKitAuth({
   providers: [

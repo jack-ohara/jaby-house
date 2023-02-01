@@ -41,3 +41,7 @@ function urlB64ToUint8Array(base64String: string) {
     }
     return outputArray;
 }
+
+export async function requestNotificationPermission() {
+    await Notification.requestPermission();
+}

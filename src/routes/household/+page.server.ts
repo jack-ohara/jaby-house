@@ -47,6 +47,7 @@ export const actions: Actions = {
       return error(400, 'New household name must be provided')
     }
 
+    console.log('creating household...')
     const client = new HouseholdClient(session)
     const result = await client.createHousehold(housholdName.toString())
 

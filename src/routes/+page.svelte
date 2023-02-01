@@ -1,15 +1,19 @@
 <script lang="ts">
-  import { page } from '$app/stores';
   import Button from '$lib/components/button.svelte';
+  import Form from '$lib/components/form/form.svelte';
+  import Input from '$lib/components/form/input.svelte';
+  import Select from '$lib/components/form/select.svelte';
   import Modal from '$lib/components/modal.svelte';
-  import { subscribeToPushNotifications } from '$lib/pushManager';
+  import { requestNotificationPermission, subscribeToPushNotifications } from '$lib/pushManager';
   import { onMount } from 'svelte';
+  import type { PageData } from './$types';
+
+  export let data: PageData;
+
+  console.log('data:', data);
 
   let showNewTaskModal = false;
-
-  async function requestNotificationPermission() {
-    await Notification.requestPermission();
-  }
+  let today = new Date();
 
   onMount(async () => {
     if ('serviceWorker' in navigator) {
@@ -22,33 +26,23 @@
 </script>
 
 <div class="wrapper">
-  {#if $page.data.household}
+  {#if data.schedule}
     <div class="household-content">
-      <h2>{$page.data.household.name}</h2>
+      <h2>{data.household.name}</h2>
       <div class="content">
-        <p>Here would be the schedule stuff...</p>
-        <p>
-          In in quis id labore duis magna nulla enim est dolor nulla magna sit. Incididunt
-          adipisicing adipisicing velit ex eiusmod irure eiusmod incididunt culpa laboris velit.
-          Dolore sit est enim amet culpa incididunt ut ad in ullamco duis nisi. Eu tempor deserunt
-          ut irure irure occaecat. Nulla amet id Lorem ullamco duis labore adipisicing duis nostrud
-          labore ad deserunt labore irure. Ipsum esse occaecat culpa ullamco tempor. Qui ex nisi
-          adipisicing cillum minim anim ullamco sint consequat tempor anim deserunt tempor. Nisi
-          deserunt minim laboris dolor fugiat dolor esse irure non. Proident ut sit qui cupidatat
-          eiusmod veniam mollit adipisicing do labore culpa exercitation reprehenderit et. Ullamco
-          incididunt elit in magna velit duis dolor nulla do id veniam enim irure occaecat. Est
-          mollit minim dolor esse eu occaecat. Quis ea ullamco enim excepteur. Occaecat cillum
-          ullamco ad ad incididunt eiusmod sint in exercitation. Nulla ea occaecat aute Lorem tempor
-          non occaecat. Sunt minim aliquip voluptate ut dolore culpa sit aute ullamco consectetur
-          aliqua dolore proident. Minim laborum eiusmod veniam consequat adipisicing aute laborum
-          id. Incididunt sunt deserunt amet eiusmod anim proident occaecat duis proident nulla
-          labore incididunt deserunt. Deserunt ipsum proident anim esse sit adipisicing proident.
-          Elit eiusmod deserunt aliqua dolore veniam cillum fugiat velit elit mollit velit. Sint
-          tempor nisi enim labore magna velit. Proident pariatur cupidatat velit deserunt id
-          voluptate laboris sit excepteur incididunt. Pariatur sit adipisicing et in adipisicing ut
-          dolore elit quis magna laboris. Incididunt consectetur laboris magna fugiat anim ea
-          nostrud ad pariatur commodo.
-        </p>
+        {#if 'schedule' in data && data.schedule}
+          {#each Object.keys(data.schedule.tasksByDay) as day}
+            <h3 class="day-header">{day}</h3>
+            <ul class="day-task-list">
+              {#each data.schedule.tasksByDay[day] as task}
+                <li class="day-task-list-task">
+                  <span>{task.name}</span>
+                  <span>{task.assignee.name}</span>
+                </li>
+              {/each}
+            </ul>
+          {/each}
+        {/if}
       </div>
 
       <span class="add-task-btn-wrapper">
@@ -59,17 +53,35 @@
         <Modal on:close={() => (showNewTaskModal = false)}>
           <h2 slot="header" class="new-task-modal-header">Add a new task</h2>
 
-          <form class="new-task-form" method="post" action="?/createNewTask">
-            <input
+          <Form action="?/createNewTask">
+            <Input
               autofocus
               type="text"
               id="new-task-name"
               name="new-task-name"
               placeholder="Task name"
+              required
             />
 
+            <Input
+              type="date"
+              id="new-task-due-date"
+              name="new-task-due-date"
+              min={`${today.getFullYear()}-${(today.getMonth() + 1)
+                .toString()
+                .padStart(2, '0')}-${today.getDate()}`}
+              placeholder="Completion date"
+              required
+            />
+
+            <Select name="new-task-assigned-user" id="new-task-assigned-user">
+              {#each data.household.users as user}
+                <option value={user['user-id']}>{user.name}</option>
+              {/each}
+            </Select>
+
             <Button type="submit">Add</Button>
-          </form>
+          </Form>
         </Modal>
       {/if}
     </div>
@@ -103,5 +115,27 @@
     padding: 8px 16px;
     width: 50px;
     height: 50px;
+  }
+  .day-header {
+    text-transform: lowercase;
+    margin-bottom: 0;
+  }
+  .day-header::first-letter {
+    text-transform: uppercase;
+  }
+  .day-task-list {
+    padding-left: 1.5em;
+    margin-top: 0;
+  }
+  .day-task-list .day-task-list-task {
+    list-style: none;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    justify-content: space-between;
+  }
+  .day-task-list .day-task-list-task:last-of-type {
+    border: none;
   }
 </style>

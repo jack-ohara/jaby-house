@@ -2,6 +2,8 @@
   import { page } from '$app/stores';
   import Button from '$lib/components/button.svelte';
   import Modal from '$lib/components/modal.svelte';
+  import { requestNotificationPermission, subscribeToPushNotifications } from '$lib/pushManager';
+  import { onMount } from 'svelte';
 
   let showCreateHouseholdModal = false;
   let showConfirmLeaveHouseholdModal = false;
@@ -16,6 +18,15 @@
       console.log('Could not share household');
     }
   }
+
+  onMount(async () => {
+    if ('serviceWorker' in navigator) {
+      await Promise.all([
+        subscribeToPushNotifications(await navigator.serviceWorker.ready),
+        requestNotificationPermission()
+      ]);
+    }
+  });
 </script>
 
 <div class="container">

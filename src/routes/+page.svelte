@@ -12,7 +12,10 @@
   export let data: PageData;
 
   let showNewTaskModal = false;
-  let today = new Date();
+  const today = new Date();
+  const todayAsString = `${today.getFullYear()}-${(today.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
 
   onMount(async () => {
     if ('serviceWorker' in navigator) {
@@ -78,16 +81,15 @@
               type="date"
               id="new-task-due-date"
               name="new-task-due-date"
-              min={`${today.getFullYear()}-${(today.getMonth() + 1)
-                .toString()
-                .padStart(2, '0')}-${today.getDate()}`}
+              min={todayAsString}
               placeholder="Completion date"
               required
+              value={todayAsString}
             />
 
             <Select name="new-task-assigned-user" id="new-task-assigned-user">
               {#each data.household.users as user}
-                <option value={user['user-id']}>{user.name}</option>
+                <option value={user.id}>{user.name}</option>
               {/each}
             </Select>
 
@@ -166,6 +168,9 @@
   }
 
   :global(button) {
-    all: initial;
+    /* all: initial; */
+    font-size: inherit;
+    background: none;
+    border: none;
   }
 </style>

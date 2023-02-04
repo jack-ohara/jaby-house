@@ -21,6 +21,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 
     const [household, schedule] = await Promise.all([householdClient.getHousehold(), scheduleClient.getSchedule()])
 
+    console.log(schedule.tasksByDay.today)
+
     if (!household) {
       throw redirect(301, '/household')
     }

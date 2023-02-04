@@ -24,7 +24,7 @@ export class ScheduleClient extends Client {
                 return response.json()
             }
 
-            throw new Error(`Error retrieving schedule: ${response}`)
+            return
         } catch (e) {
             console.log('error retrieving schedule', JSON.stringify(e))
             throw e

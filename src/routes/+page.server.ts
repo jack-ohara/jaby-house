@@ -55,7 +55,6 @@ export const actions: Actions = {
     }
 
     const data = await request.formData()
-    console.log(data)
 
     const payload: Record<string, string | number | undefined> = {
       name: data.get('new-task-name')?.toString(),

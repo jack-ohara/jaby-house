@@ -55,7 +55,7 @@ export class HouseholdClient extends Client {
 
     async joinHousehold(joinCode: string) {
         try {
-            const response = await fetch(`${this.auth_token}/join`, {
+            const response = await fetch(`${this.base_url}/join`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${this.auth_token}`
@@ -76,7 +76,7 @@ export class HouseholdClient extends Client {
 
     async leaveHousehold() {
         try {
-            const response = await fetch(`${this.auth_token}/leave`, {
+            const response = await fetch(`${this.base_url}/leave`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${this.auth_token}`

@@ -3,14 +3,13 @@
   import Form from '$lib/components/form/form.svelte';
   import Input from '$lib/components/form/input.svelte';
   import Select from '$lib/components/form/select.svelte';
+  import FaIcon from '$lib/components/icons/fa-icon.svelte';
   import Modal from '$lib/components/modal.svelte';
   import { requestNotificationPermission, subscribeToPushNotifications } from '$lib/pushManager';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
-
-  console.log('data:', data);
 
   let showNewTaskModal = false;
   let today = new Date();
@@ -36,8 +35,20 @@
             <ul class="day-task-list">
               {#each data.schedule.tasksByDay[day] as task}
                 <li class="day-task-list-task">
-                  <span>{task.name}</span>
-                  <span>{task.assignee.name}</span>
+                  <div class="task-details">
+                    <span>{task.name}</span>
+                    <span class="task-assignee">{task.assignee.name}</span>
+                  </div>
+
+                  <div class="task-actions">
+                    <button>
+                      <FaIcon iconName="trash" />
+                    </button>
+
+                    <button>
+                      <FaIcon iconName="check" />
+                    </button>
+                  </div>
                 </li>
               {/each}
             </ul>
@@ -124,18 +135,37 @@
     text-transform: uppercase;
   }
   .day-task-list {
-    padding-left: 1.5em;
+    padding-left: 1.2em;
+    padding-top: 0.7em;
     margin-top: 0;
   }
   .day-task-list .day-task-list-task {
     list-style: none;
     font-size: 1.5em;
-    line-height: 1.5em;
     border-bottom: 1px solid lightgrey;
     display: flex;
+    gap: 0.2em;
+    padding: 0.3em;
     justify-content: space-between;
+    align-items: center;
   }
   .day-task-list .day-task-list-task:last-of-type {
     border: none;
+  }
+  .day-task-list .day-task-list-task .task-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .day-task-list .day-task-list-task .task-details .task-assignee {
+    font-size: 0.7em;
+  }
+  .day-task-list .day-task-list-task .task-actions {
+    display: flex;
+    gap: 1em;
+  }
+
+  :global(button) {
+    all: initial;
   }
 </style>

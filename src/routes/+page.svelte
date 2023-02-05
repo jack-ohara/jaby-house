@@ -1,10 +1,13 @@
 <script lang="ts">
+  import Button from '$lib/components/button.svelte';
   import FaIcon from '$lib/components/icons/fa-icon.svelte';
   import { requestNotificationPermission, subscribeToPushNotifications } from '$lib/pushManager';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
+
+  let expandedTaskId: string | undefined;
 
   onMount(async () => {
     if ('serviceWorker' in navigator) {
@@ -14,32 +17,36 @@
       ]);
     }
   });
+
+  const handleExpandTask = (taskId: string) => {
+    expandedTaskId = expandedTaskId === taskId ? undefined : taskId;
+  };
 </script>
 
 <div class="wrapper">
   {#if data.schedule}
     <div class="household-content">
-      <h2>{data.household.name}</h2>
       <div class="content">
         {#if 'schedule' in data && data.schedule}
           {#each Object.keys(data.schedule.tasksByDay) as day}
             <h3 class="day-header">{day}</h3>
             <ul class="day-task-list">
               {#each data.schedule.tasksByDay[day] as task}
-                <li class="day-task-list-task">
-                  <div class="task-details">
-                    <span>{task.name}</span>
-                    <span class="task-assignee">{task.assignee.name}</span>
+                <li class="day-task-list-task" class:expand={expandedTaskId === task.id}>
+                  <div class="task-header" on:click={() => handleExpandTask(task.id)}>
+                    <div class="task-details">
+                      <span>{task.name}</span>
+                      <span class="task-assignee">{task.assignee.name}</span>
+                    </div>
+
+                    <FaIcon iconName="caret-down" />
                   </div>
 
-                  <div class="task-actions">
-                    <button>
-                      <FaIcon iconName="trash" />
-                    </button>
-
-                    <button>
-                      <FaIcon iconName="check" />
-                    </button>
+                  <div class="expanded-task-details">
+                    <div class="btn-group">
+                      <Button class="delete-task"><FaIcon iconName="trash" /> Delete</Button>
+                      <Button class="complete-task"><FaIcon iconName="check" /> Mark done</Button>
+                    </div>
                   </div>
                 </li>
               {/each}
@@ -101,9 +108,11 @@
     list-style: none;
     font-size: 1.5em;
     border-bottom: 1px solid lightgrey;
+    padding: 0.3em;
+  }
+  .day-task-list .day-task-list-task .task-header {
     display: flex;
     gap: 0.2em;
-    padding: 0.3em;
     justify-content: space-between;
     align-items: center;
   }
@@ -118,9 +127,43 @@
   .day-task-list .day-task-list-task .task-details .task-assignee {
     font-size: 0.7em;
   }
-  .day-task-list .day-task-list-task .task-actions {
+  .day-task-list .day-task-list-task .expanded-task-details {
+    font-size: 0.7em;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+  .day-task-list .day-task-list-task.expand .expanded-task-details {
+    max-height: 60px;
+  }
+  .day-task-list .day-task-list-task .task-header > :global(i) {
+    transition: rotate 0.2s ease-out;
+  }
+  .day-task-list .day-task-list-task.expand .task-header > :global(i) {
+    rotate: -180deg;
+  }
+  .day-task-list .day-task-list-task .expanded-task-details .btn-group {
+    margin-top: 1em;
     display: flex;
     gap: 1em;
+  }
+  .day-task-list .day-task-list-task .expanded-task-details :global(*) {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
+  .day-task-list .day-task-list-task .expanded-task-details :global(.delete-task),
+  .day-task-list .day-task-list-task .expanded-task-details :global(.complete-task) {
+    padding-block: 0.5em;
+    padding-inline: 1em;
+    color: white;
+  }
+
+  .day-task-list .day-task-list-task .expanded-task-details :global(.delete-task) {
+    background-color: firebrick;
+  }
+
+  .day-task-list .day-task-list-task .expanded-task-details :global(.complete-task) {
+    background-color: forestgreen;
   }
 
   :global(button) {

@@ -1,21 +1,10 @@
 <script lang="ts">
-  import Button from '$lib/components/button.svelte';
-  import Form from '$lib/components/form/form.svelte';
-  import Input from '$lib/components/form/input.svelte';
-  import Select from '$lib/components/form/select.svelte';
   import FaIcon from '$lib/components/icons/fa-icon.svelte';
-  import Modal from '$lib/components/modal.svelte';
   import { requestNotificationPermission, subscribeToPushNotifications } from '$lib/pushManager';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
-
-  let showNewTaskModal = false;
-  const today = new Date();
-  const todayAsString = `${today.getFullYear()}-${(today.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
 
   onMount(async () => {
     if ('serviceWorker' in navigator) {
@@ -60,43 +49,8 @@
       </div>
 
       <span class="add-task-btn-wrapper">
-        <Button class="add-task-btn" on:click={() => (showNewTaskModal = true)}>+</Button>
+        <a class="add-task-btn" href="/add-task">+</a>
       </span>
-
-      {#if showNewTaskModal}
-        <Modal on:close={() => (showNewTaskModal = false)}>
-          <h2 slot="header" class="new-task-modal-header">Add a new task</h2>
-
-          <Form action="?/createNewTask">
-            <Input
-              autofocus
-              type="text"
-              id="new-task-name"
-              name="new-task-name"
-              placeholder="Task name"
-              required
-            />
-
-            <Input
-              type="date"
-              id="new-task-due-date"
-              name="new-task-due-date"
-              min={todayAsString}
-              placeholder="Completion date"
-              required
-              value={todayAsString}
-            />
-
-            <Select name="new-task-assigned-user" id="new-task-assigned-user">
-              {#each data.household.users as user}
-                <option value={user.id}>{user.name}</option>
-              {/each}
-            </Select>
-
-            <Button type="submit">Add</Button>
-          </Form>
-        </Modal>
-      {/if}
     </div>
   {/if}
 </div>
@@ -125,9 +79,11 @@
     aspect-ratio: 1;
     background-color: firebrick;
     color: white;
-    padding: 8px 16px;
+    text-decoration: none;
     width: 50px;
     height: 50px;
+    text-align: center;
+    vertical-align: middle;
   }
   .day-header {
     text-transform: lowercase;

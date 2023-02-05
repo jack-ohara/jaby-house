@@ -15,9 +15,14 @@
 
   form :global(*:not(button)) {
     font-size: 1.3rem;
-    padding: 0.3em;
+    padding-block: 0.3em;
     font-family: inherit;
-    border-radius: 4px;
-    border: 1px solid darkgrey;
+    border: none;
+    border-bottom: 1px solid darkgrey;
+    outline: none;
+  }
+
+  form :global(*:not(button)):focus-within {
+    box-shadow: 0 2px 0 0 darkgrey;
   }
 </style>

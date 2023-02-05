@@ -14,4 +14,3 @@
 
 <!-- svelte-ignore a11y-autofocus -->
 <input {type} {autofocus} {id} {name} {placeholder} {min} {max} {value} {required} />
-

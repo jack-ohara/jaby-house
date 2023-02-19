@@ -23,6 +23,9 @@
     transition: box-shadow 0.1s linear;
     outline: none;
     appearance: none;
+    background-color: inherit;
+    color: inherit;
+    text-align: left;
   }
 
   form :global(*:not(button)):focus-within {

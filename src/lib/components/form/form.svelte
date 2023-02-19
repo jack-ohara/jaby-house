@@ -22,6 +22,7 @@
     box-shadow: 0 0 0 0;
     transition: box-shadow 0.1s linear;
     outline: none;
+    appearance: none;
   }
 
   form :global(*:not(button)):focus-within {

@@ -7,8 +7,6 @@
 
   export let data: PageData;
 
-  let expandedTaskId: string | undefined;
-
   onMount(async () => {
     if ('serviceWorker' in navigator) {
       await Promise.all([
@@ -18,48 +16,55 @@
     }
   });
 
-  const handleExpandTask = (taskId: string) => {
-    expandedTaskId = expandedTaskId === taskId ? undefined : taskId;
+  const updateTaskCompleteStatus = async (taskId: string, newIsComplete: boolean) => {
+    await fetch(`/api/task/${taskId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        isComplete: newIsComplete
+      })
+    });
   };
 </script>
 
 <div class="wrapper">
-  {#if data.schedule}
-    <div class="household-content">
-      <div class="content">
+  <div class="household-content">
+    <div class="content">
+      {#if data.schedule}
         {#if 'schedule' in data && data.schedule}
           {#each Object.keys(data.schedule.tasksByDay) as day}
             <h3 class="day-header">{day}</h3>
             <ul class="day-task-list">
               {#each data.schedule.tasksByDay[day] as task}
-                <li class="day-task-list-task" class:expand={expandedTaskId === task.id}>
-                  <div class="task-header" on:click={() => handleExpandTask(task.id)}>
-                    <div class="task-details">
+                <li class="day-task-list-task">
+                  <div class="task">
+                    <input
+                      type="checkbox"
+                      checked={task.isComplete}
+                      on:change={() => {
+                        task.isComplete = !task.isComplete;
+                        updateTaskCompleteStatus(task.id, task.isComplete);
+                      }}
+                    />
+                    <div class="task-details" class:completed={task.isComplete}>
                       <span>{task.name}</span>
                       <span class="task-assignee">{task.assignee.name}</span>
                     </div>
 
-                    <FaIcon iconName="caret-down" />
-                  </div>
-
-                  <div class="expanded-task-details">
-                    <div class="btn-group">
-                      <Button class="delete-task"><FaIcon iconName="trash" /> Delete</Button>
-                      <Button class="complete-task"><FaIcon iconName="check" /> Mark done</Button>
-                    </div>
+                    {#if !task.isComplete}
+                      <FaIcon iconName="trash-can" variant="regular" />
+                    {/if}
                   </div>
                 </li>
               {/each}
             </ul>
           {/each}
         {/if}
-      </div>
-
-      <span class="add-task-btn-wrapper">
-        <a class="add-task-btn" href="/add-task">+</a>
-      </span>
+      {/if}
     </div>
-  {/if}
+    <span class="add-task-btn-wrapper">
+      <a class="add-task-btn" href="/add-task" />
+    </span>
+  </div>
 </div>
 
 <style>
@@ -81,16 +86,20 @@
     justify-content: flex-end;
     font-size: 2em;
   }
-  .add-task-btn-wrapper :global(.add-task-btn) {
+  .add-task-btn-wrapper .add-task-btn {
     border-radius: 50%;
-    aspect-ratio: 1;
     background-color: firebrick;
     color: white;
     text-decoration: none;
     width: 50px;
     height: 50px;
-    text-align: center;
-    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .add-task-btn::after {
+    content: '+';
+    padding-bottom: 4px;
   }
   .day-header {
     text-transform: lowercase;
@@ -100,7 +109,7 @@
     text-transform: uppercase;
   }
   .day-task-list {
-    padding-left: 1.2em;
+    padding-left: 0;
     padding-top: 0.7em;
     margin-top: 0;
   }
@@ -110,7 +119,31 @@
     border-bottom: 1px solid lightgrey;
     padding: 0.3em;
   }
-  .day-task-list .day-task-list-task .task-header {
+  .day-task-list .day-task-list-task input[type='checkbox'] {
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    border: 1px solid lightgrey;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 1em;
+    display: grid;
+    place-content: center;
+  }
+  .day-task-list .day-task-list-task input[type='checkbox']::before {
+    content: '';
+    width: 17px;
+    height: 17px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em firebrick;
+    border-radius: 50%;
+  }
+  .day-task-list .day-task-list-task input[type='checkbox']:checked::before {
+    transform: scale(1);
+  }
+  .day-task-list .day-task-list-task .task {
     display: flex;
     gap: 0.2em;
     justify-content: space-between;
@@ -123,47 +156,17 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    font-size: 0.75em;
+  }
+  .day-task-list .day-task-list-task .task-details.completed {
+    color: grey;
+    text-decoration: line-through;
   }
   .day-task-list .day-task-list-task .task-details .task-assignee {
     font-size: 0.7em;
   }
-  .day-task-list .day-task-list-task .expanded-task-details {
-    font-size: 0.7em;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-  }
-  .day-task-list .day-task-list-task.expand .expanded-task-details {
-    max-height: 60px;
-  }
-  .day-task-list .day-task-list-task .task-header > :global(i) {
+  .day-task-list .day-task-list-task .task > :global(i) {
     transition: rotate 0.2s ease-out;
-  }
-  .day-task-list .day-task-list-task.expand .task-header > :global(i) {
-    rotate: -180deg;
-  }
-  .day-task-list .day-task-list-task .expanded-task-details .btn-group {
-    margin-top: 1em;
-    display: flex;
-    gap: 1em;
-  }
-  .day-task-list .day-task-list-task .expanded-task-details :global(*) {
-    flex-basis: 0;
-    flex-grow: 1;
-  }
-  .day-task-list .day-task-list-task .expanded-task-details :global(.delete-task),
-  .day-task-list .day-task-list-task .expanded-task-details :global(.complete-task) {
-    padding-block: 0.5em;
-    padding-inline: 1em;
-    color: white;
-  }
-
-  .day-task-list .day-task-list-task .expanded-task-details :global(.delete-task) {
-    background-color: firebrick;
-  }
-
-  .day-task-list .day-task-list-task .expanded-task-details :global(.complete-task) {
-    background-color: forestgreen;
   }
 
   :global(button) {

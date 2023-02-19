@@ -1,8 +1,8 @@
 <script lang="ts">
-  export let type: "reset" | "submit" | "button" | undefined = undefined;
+  export let type: 'reset' | 'submit' | 'button' | undefined = undefined;
 </script>
 
-<button on:click type={type} class={$$props.class}>
+<button on:click {type} class={$$props.class}>
   <slot />
 </button>
 
@@ -23,5 +23,8 @@
   button:focus {
     background: #94a3b8;
     color: #f1f5f9;
+  }
+  button:focus-visible {
+    outline: firebrick auto 1px;
   }
 </style>

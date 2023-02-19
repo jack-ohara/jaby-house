@@ -19,10 +19,12 @@
     font-family: inherit;
     border: none;
     border-bottom: 1px solid darkgrey;
+    box-shadow: 0 0 0 0;
+    transition: box-shadow 0.1s linear;
     outline: none;
   }
 
   form :global(*:not(button)):focus-within {
-    box-shadow: 0 2px 0 0 darkgrey;
+    box-shadow: 0 2px 0 0 firebrick;
   }
 </style>

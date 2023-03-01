@@ -28,6 +28,10 @@
     text-align: left;
   }
 
+  form :global(::-webkit-datetime-edit) {
+    margin-right: auto;
+  }
+
   form :global(*:not(button)):focus-within {
     box-shadow: 0 2px 0 0 firebrick;
   }

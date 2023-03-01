@@ -52,4 +52,25 @@ export class TaskClient extends Client {
       throw e;
     }
   }
+
+  async deleteTask(taskId: string) {
+    try {
+      const response = await fetch(`${this.base_url}/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${this.auth_token}`
+        }
+      });
+
+      if (response.ok) {
+        return;
+      }
+
+      throw new Error(`Error delete task ${taskId}: ${JSON.stringify(response, null, 2)}`);
+    } catch (e) {
+      console.log(`Error deleting task: ${JSON.stringify(e, null, 2)}`);
+
+      throw e;
+    }
+  }
 }

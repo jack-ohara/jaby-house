@@ -1,11 +1,13 @@
 <script lang="ts">
-  import Button from '$lib/components/button.svelte';
   import FaIcon from '$lib/components/icons/fa-icon.svelte';
+  import Skeleton from '$lib/components/skeleton.svelte';
   import { requestNotificationPermission, subscribeToPushNotifications } from '$lib/pushManager';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
+
+  let deleteIsLoading = false;
 
   onMount(async () => {
     if ('serviceWorker' in navigator) {
@@ -23,6 +25,15 @@
         isComplete: newIsComplete
       })
     });
+  };
+
+  const deleteTask = async (taskId: string) => {
+    deleteIsLoading = true;
+    await fetch(`/api/task/${taskId}`, {
+      method: 'DELETE'
+    });
+
+    location.reload();
   };
 </script>
 
@@ -51,7 +62,13 @@
                     </div>
 
                     {#if !task.isComplete}
-                      <FaIcon iconName="trash-can" variant="regular" />
+                      {#if deleteIsLoading}
+                        <Skeleton />
+                      {:else}
+                        <button on:click={() => deleteTask(task.id)} disabled={deleteIsLoading}>
+                          <FaIcon iconName="trash-can" variant="regular" />
+                        </button>
+                      {/if}
                     {/if}
                   </div>
                 </li>

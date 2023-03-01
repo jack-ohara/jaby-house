@@ -15,3 +15,17 @@ export async function PUT({ locals, params, request }: RequestEvent): Promise<Re
 
   return new Response();
 }
+
+export async function DELETE({ locals, params }: RequestEvent): Promise<Response> {
+  const session = await locals.getSession();
+
+  if (!session) {
+    throw error(401, 'You must be logged in to use this endpoint');
+  }
+
+  const taskClient = new TaskClient(session);
+
+  await taskClient.deleteTask(params.id);
+
+  return new Response(undefined, { status: 204 });
+}
